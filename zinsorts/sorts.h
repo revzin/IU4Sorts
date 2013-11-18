@@ -1,5 +1,9 @@
 // sorts.h - функции сортировки
-// Программист - Денис
+// ДЕНИС
+
+// Внимание --- заголовочные файлы - не место для реализаций функцй. 
+// Они должны идти в соответствующие *.c-файлы
+
 
 // Стандартные инклюды
 
@@ -8,7 +12,7 @@
 #include "comp.h"
 
 
-void sort_pyramid(void* array, int elem_size, int array_len, 
+void SRT_sort_pyramid(void* array, int elem_size, int array_len, 
 	int (*compare_function)(void* pA, void* pB), int ascending);
 /*	Пирамидальная сортировка произвольного типа данных
 	array		-	указатель на массив под сортировку
@@ -17,13 +21,13 @@ void sort_pyramid(void* array, int elem_size, int array_len,
 	int (*compare_function)(void* pA, void* pB) -
 				-	указатель на функцию, сравнивающую два элемента под сортировку.
 					Передача по указателю.
-					Должна возраащть 0, если *pA >= *pB и 1 в противном случае.
+					Должна возраащть 1, если *pA >= *pB и 0 в противном случае.
 					Примеры смотри в comp.h/comp.c.
 	descending	-	1, если следует сортировать по убыванию.
 				-	0, если по возрастанию.
 */
 
-void sort_bubble(void* array, int elem_size, int array_len, 
+void SRT_sort_bubble(void* array, int elem_size, int array_len, 
 	int (*compare_function)(void* pA, void* pB), int ascending);
 /*	Пузырьковая сортировка произвольного типа данных
 	array		-	указатель на массив под сортировку
@@ -32,7 +36,7 @@ void sort_bubble(void* array, int elem_size, int array_len,
 	int (*compare_function)(void* pA, void* pB) -
 				-	указатель на функцию, сравнивающую два элемента под сортировку.
 					Передача по указателю.
-					Должна возраащть 0, если *pA >= *pB и 1 в противном случае.
+					Должна возраащть 1, если *pA >= *pB и - в противном случае.
 					Примеры смотри в comp.h/comp.c.
 	descending	-	1, если следует сортировать по убыванию.
 				-	0, если по возрастанию.
