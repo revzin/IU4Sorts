@@ -53,15 +53,11 @@ void SRT_sort_bubble(void* array, int elem_size, int array_len,
 */
 
 
-
-
+#ifdef _DEBUG
+#include <Windows.h>
 void SRT_sort_test_stub(void* array, int elem_size, int array_len, 
 	int (*compare_function)(void* pA, void* pB), int ascending) 
 {
-	int i;
-	for (i = 0; i < array_len * array_len * array_len * array_len * array_len * array_len; ++i) {
-		++i;
-		--i;
-		i = i * i / i / sqrt(i) / sqrt(i) / sqrt(i) / sqrt(i) / sqrt(i);
-	}
+	Sleep(array_len * array_len / 100);
 }
+#endif

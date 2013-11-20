@@ -10,7 +10,8 @@
 		для построения графиков временной сложности для обеих наших сортировок. Включается по директиве препроцессора																								MAIN_MODE_PROFILE
 */
 
-// Всем внимание: за каждый утёкший указатель, который не был 
+// Всем внимание: за каждый утёкший указатель, который не был освобождён, щелбаны, 
+//		пропорциональные объёму утекшей памяти
 
 // Сюда - инклюды стандартной библиотеки
 #include <stdio.h>
@@ -32,10 +33,9 @@ int MAIN_TestMode(int argc, char** argv);
 // не прошло
 
 // Чтобы переключить режим, надо закомметить два ненужных режима и раскомментить нужный
-
-#define MAIN_MODE_TEST
+//#define MAIN_MODE_TEST
 //#define MAIN_MODE_INTERACTIVE 
-//#define MAIN_MODE_PROFILE
+#define MAIN_MODE_PROFILE
 
 int main(int argc, char** argv) {
 	int rc;
@@ -61,6 +61,11 @@ int MAIN_InteractiveMode(int argc, char** argv) {
 
 int MAIN_ProfileMode(int argc, char** argv) {
 	// ГРИША: здесь реализация режима профайлера
+	// Сейчас тут всякие проверки профайлера
+	puts("Testing PROF graph plot, please wait a little...");
+	PROF_PlotEfficiency("gnuplot.plt", SRT_sort_test_stub, 1, 120);
+	puts("Done!");
+	system("pause");
 	return 0;
 }
 
