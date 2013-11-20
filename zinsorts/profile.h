@@ -2,19 +2,21 @@
 // ГРИША
 
 // Ст. библиотека
-#include <stdio.h>
-
+#include <stdio.h> // Для FILE* f
 
 void	PROF_StartProfile();
 // Запуск/перезапуск отсчёта времени
 
-float	PROF_GetTimeElaspedMSec();
+double	PROF_GetTimeElaspedMSec();
 // Чтение количества миллисекунд, набежавших с последнего вызова PROF_StartProfile();
+
+double	PROF_GetDeltaTimeMSec();
+// Возвращает количество миллисекунд, набежавших с момента последнего вызова GetTimeElaspedMSec
 
 void	PROF_StopProfile();
 // Остановка отсчёта
 
-float	PROF_ProfileSort(int nElems,
+double	PROF_ProfileSort(int nElems,
 	void (*sort_function)(void* array, int elem_size, int array_len, 
 			int (*compare_function)(void* pA, void* pB), int ascending)
 	);
