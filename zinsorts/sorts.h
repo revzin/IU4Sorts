@@ -41,3 +41,4 @@ void SRT_sort_bubble(void* array, int elem_size, int array_len,
 	descending	-	1, если следует сортировать по убыванию.
 				-	0, если по возрастанию.
 */
+                          O,....,O
