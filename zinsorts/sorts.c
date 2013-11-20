@@ -22,6 +22,7 @@ void _swap_elems(void* a, void* b, int elem_size) {
 		memcpy(buf, a, elem_size);	// buf = a
 		memcpy(a, b, elem_size);	// a = b
 		memcpy(b, buf, elem_size);	// b = buf
+		free(buf);
 	}
 }
 
