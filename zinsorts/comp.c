@@ -1,3 +1,5 @@
+/* *ICQ Mode on* Денис: Какие всё-таки данные должны сравнивать эти функции?
+Только int и double, или, допустим ещё char (сортируем что-нибудь по алфавиту)? */
 #include "comp.h"
 
 int CMP_CompareInts(void* pA, void* pB) {
