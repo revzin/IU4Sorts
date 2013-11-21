@@ -161,6 +161,16 @@ int	PROF_PlotEfficiency(char* pszFileName,
 }
 
 
+#ifdef _DEBUG
+#include <Windows.h>
+void PROF_StubTestSortImitator(void* array, int elem_size, int array_len, 
+	int (*compare_function)(void* pA, void* pB), int ascending) 
+{
+	Sleep(array_len * array_len / 100);
+}
+#endif
+
+
 int* AllocRandIntArray(int size) {
 	int i;
 	int* mem;

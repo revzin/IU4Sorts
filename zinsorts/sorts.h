@@ -43,8 +43,3 @@ void SRT_sort_bubble(void* array, int elem_size, int array_len,
 */
 
 
-void SRT_sort_test_stub(void* array, int elem_size, int array_len, 
-	int (*compare_function)(void* pA, void* pB), int ascending);
-// Это на самом деле не сортировка, а просто функция, которая занимается всякой фигнёй,
-// и занимает немного времени,
-// мне для тестирования профайлера нужно - Г.

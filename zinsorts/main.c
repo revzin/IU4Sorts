@@ -63,7 +63,7 @@ int MAIN_ProfileMode(int argc, char** argv) {
 	// ГРИША: здесь реализация режима профайлера
 	// Сейчас тут всякие проверки профайлера
 	puts("Testing PROF graph plot, please wait a little...");
-	PROF_PlotEfficiency("gnuplot.plt", SRT_sort_test_stub, 1, 120);
+	PROF_PlotEfficiency("gnuplot.plt", PROF_StubTestSortImitator, 1, 120);
 	puts("Done!");
 	system("pause");
 	return 0;

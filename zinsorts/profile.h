@@ -27,3 +27,9 @@ int	PROF_PlotEfficiency(char* pszFileName,
 // Подготовка графика временной сложности функции сортировки *sort_function в формате gnuplot
 // График строится от n_minElems до n_maxElems в файл pszFileName
 // В случае успеха возвращается 0
+
+
+void PROF_StubTestSortImitator(void* array, int elem_size, int array_len, 
+	int (*compare_function)(void* pA, void* pB), int ascending);
+// Имитатор сортировки с наперёд известной временной "сложностью" для отладки построения графиков 
+// в PROF_PlotEfficiency
