@@ -151,5 +151,8 @@ $RECYCLE.BIN/
 .DS_Store
 
 # Specific stuff - gnuplots and pngs
-*.plt 
+*.data
+*.plt
 *.png
+*.data
+

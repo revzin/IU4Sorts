@@ -117,8 +117,9 @@ const char GNUPLOT_CmdSetTitle[] = "set title \"Complexity\"\n";
 const char GNUPLOT_CmdSetXLabel[] = "set xlabel \"Number of elements in array\"\n";
 const char GNUPLOT_CmdSetYLabel[] = "set ylabel \"Time (abstract units)\"\n";
 const char GNUPLOT_CmdSetGrid[] = "set grid\n";
-const char GNUPLOT_SetPNG[] = "set term pngcairo\nset output \"%s\"\n"; 
+const char GNUPLOT_CmdSetPNG[] = "set term pngcairo\nset output \"%s\"\n"; 
 									// Используем библиотеку cairo для png
+const char GNUPLOT_CmdExit[] = "exit\n"; 
 const char GNUPLOT_CmdDoPlot[] = "plot \"%s\" title \"\"\n";
 const char GNUPLOT_FileTitle[] = "#elements \t time\n";
 const char GNUPLOT_DataFormat[] = "%d \t %f\n";
@@ -166,8 +167,9 @@ int	PROF_PlotEfficiency(char* pszFileName,
 
 	strncpy(stringbuf, pszFileName, 255);
 	strncat(stringbuf, ".png", 255);
-	fprintf_s(gnuplot_out,  GNUPLOT_SetPNG, stringbuf);
+	fprintf_s(gnuplot_out,  GNUPLOT_CmdSetPNG, stringbuf);
 	fprintf_s(gnuplot_out,  GNUPLOT_CmdDoPlot, GNUPLOT_DefaultDatafileName);
+	fprintf_s(gnuplot_out,  GNUPLOT_CmdExit);
 	fclose(gnuplot_out);
 
 	return 0;
