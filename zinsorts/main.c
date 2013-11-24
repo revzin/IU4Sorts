@@ -117,7 +117,8 @@ int MAIN_InteractiveMode(int argc, char** argv) {
 		if ((char) getchar() == '\n') {
 			// ≈сли дальше \n, останавливаемс€ 
 			// TODO: выбор сортировки
-			SRT_sort_heap(int_array, sizeof(int), int_array_len, CMP_CompareInts, 1);
+			//SRT_sort_heap(int_array, sizeof(int), int_array_len, CMP_CompareInts, 1);
+			SRT_sort_bubble(int_array, sizeof(int), int_array_len, CMP_CompareInts, 1);
 			printf("Sorted array: ");
 			for (i = 0; i < int_array_len; ++i) printf("%d ", int_array[i]);
 			printf("\n");
