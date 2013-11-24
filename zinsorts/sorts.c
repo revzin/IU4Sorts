@@ -10,7 +10,7 @@
 /* Вспомогательные функции */
 // Указатель на i-тый элемент обобщенного массива
 __forceinline void* _ith_element(void* array, int i, int elem_size);
-#define _ITH(x) _ith_element(array, x, elem_size)	 // Было замечено, что больше никаким образом эту функцию не вызывают
+#define _ITH(x) _ith_element(array, (x), elem_size)	 // Было замечено, что больше никаким образом эту функцию не вызывают
 													 // Если вы хотите нписать _ith_element(array, какой-то номер, elem_size)
 													 // То можно написать _ITH(x)
 // Копирование элементов обобщенного массива

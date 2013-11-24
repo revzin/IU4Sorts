@@ -40,7 +40,7 @@ int TST_TestSort(void (*sort_function)(void* array, int elem_size, int array_len
 	int i;
 	int check;
 	int* need_sort_mass;
-	need_sort_mass = malloc (sizeof(int) * 10);
+	need_sort_mass = malloc( sizeof(int) * 10 );
 	check = 0;
 	for (i = 0; i < 10; i ++){
 		*(need_sort_mass+i) = g_AlreadySortedReference.initialArray[i];        

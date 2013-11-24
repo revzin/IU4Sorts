@@ -25,6 +25,7 @@ int	PROF_PlotEfficiency(char* pszFileName,
 			int (*compare_function)(void* pA, void* pB), int ascending),
 			int n_minElems, int n_maxElems);
 // Подготовка графика временной сложности функции сортировки *sort_function в формате gnuplot
+// pszFileName - название файла gnuplot для вывода и по совместительству файла PNG
 // График строится от n_minElems до n_maxElems в файл pszFileName
 // В случае успеха возвращается 0
 

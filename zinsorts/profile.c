@@ -113,15 +113,15 @@ double	PROF_ProfileSort(int nElems,
 	return timeElapsed;
 }
 
-const char GNUPLOT_CmdSetTitle[] = "set title \"Spatial Complexity\"\n";
+const char GNUPLOT_CmdSetTitle[] = "set title \"Complexity\"\n";
 const char GNUPLOT_CmdSetXLabel[] = "set xlabel \"Number of elements in array\"\n";
-const char GNUPLOT_CmdSetYLabel[] = "set ylabel \"Time (usec)\"\n";
+const char GNUPLOT_CmdSetYLabel[] = "set ylabel \"Time (abstract units)\"\n";
 const char GNUPLOT_CmdSetGrid[] = "set grid\n";
+const char GNUPLOT_SetPNG[] = "set term pngcairo\nset output \"%s\"\n"; 
+									// Используем библиотеку cairo для png
 const char GNUPLOT_CmdDoPlot[] = "plot \"%s\" title \"\"\n";
-
 const char GNUPLOT_FileTitle[] = "#elements \t time\n";
 const char GNUPLOT_DataFormat[] = "%d \t %f\n";
-
 const char GNUPLOT_DefaultDatafileName[] = "algo_complex.data";
 
 int	PROF_PlotEfficiency(char* pszFileName,
@@ -132,6 +132,9 @@ int	PROF_PlotEfficiency(char* pszFileName,
 	FILE* data_out, *gnuplot_out;
 	int i;
 	double locValue;
+	const int sleep_offload = 10;
+
+	char stringbuf[255];
 
 	if (!pszFileName || !sort_function || 
 			n_minElems <= 0 || n_maxElems <= 0 || n_minElems >= n_maxElems) return 2;
@@ -141,18 +144,29 @@ int	PROF_PlotEfficiency(char* pszFileName,
 	fprintf_s(data_out, GNUPLOT_FileTitle);
 
 	for (i = n_minElems; i < n_maxElems + 1; ++i) {
+		Sleep(sleep_offload);	// Спим некоторое время. Это делает эффекты, вносимые
+								// переключением контекстов и прочей гадостью, менее значительными
+								// Графики получаются куда более гладкими
 		locValue = PROF_ProfileSort(i, sort_function);
+		Sleep(sleep_offload);
 		fprintf_s(data_out, GNUPLOT_DataFormat, i, locValue);
 	}
 	fclose(data_out);
 
+	strncpy(stringbuf, pszFileName, 255);
+	strncat(stringbuf, ".plt", 255);
+
 	// Запись файла с командами для GNUPLOT
-	if (fopen_s(&gnuplot_out, pszFileName, "w+")) return 1; 
+	if (fopen_s(&gnuplot_out, stringbuf, "w+")) return 1; 
 	fprintf_s(gnuplot_out,	GNUPLOT_CmdSetTitle);
 	fprintf_s(gnuplot_out,  GNUPLOT_CmdSetXLabel);
 	fprintf_s(gnuplot_out,  GNUPLOT_CmdSetYLabel);
 	fprintf_s(gnuplot_out,  GNUPLOT_CmdSetYLabel);
 	fprintf_s(gnuplot_out,  GNUPLOT_CmdSetGrid);
+
+	strncpy(stringbuf, pszFileName, 255);
+	strncat(stringbuf, ".png", 255);
+	fprintf_s(gnuplot_out,  GNUPLOT_SetPNG, stringbuf);
 	fprintf_s(gnuplot_out,  GNUPLOT_CmdDoPlot, GNUPLOT_DefaultDatafileName);
 	fclose(gnuplot_out);
 
