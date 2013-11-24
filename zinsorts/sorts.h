@@ -12,7 +12,7 @@
 #include "comp.h"
 
 
-void SRT_sort_pyramid(void* array, int elem_size, int array_len, 
+void SRT_sort_heap(void* array, int elem_size, int array_len, 
 	int (*compare_function)(void* pA, void* pB), int ascending);
 /*	Пирамидальная сортировка произвольного типа данных
 	array		-	указатель на массив под сортировку

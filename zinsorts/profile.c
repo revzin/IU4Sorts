@@ -45,7 +45,6 @@ void PROF_StartProfile() {
 
 	QueryPerformanceFrequency((LARGE_INTEGER*) &li);
 	if (!li) return;
-	
 	g_PCFreq = (double) li / 1000000.0f;
 
 	QueryPerformanceCounter((LARGE_INTEGER*) &g_StartTime);
