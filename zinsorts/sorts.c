@@ -87,29 +87,18 @@ void SRT_sort_bubble(void* array, int elem_size, int array_len,
 	int (*compare_function)(void* pA, void* pB), int ascending) {
 		int i, j, k;
 		k=0;
-		 // Сортируем по возрастанию
-		if (ascending=1) {
-			for (i=0; i<array_len; i++) {
-				for (j=0; j<array_len-i-1; j++)	{ // Отнимаем i, чтобы не трогать отсортированные элементы
-					// j-й элемент - текущий 
-					k=j+1; // k-й элемент - следующий
-					if (compare_function(_ITH(j), _ITH(k))==1) { 
-						_swap_elems (_ITH(j), _ITH(k), elem_size); // Если текущий элемент больше следующего, меняем их местами
-					}
-				}
-			}
-		}
-
-		// Сортируем по убыванию
-		if (ascending=0) {
-			for (i=0; i<array_len; i++)
-			{
-				for (j=0; j<array_len-i-1; j++) {
-					k=j+1; 
-					if (compare_function(_ITH(j), _ITH(k))==0) {
-						_swap_elems (_ITH(j), _ITH(k), elem_size); // Если следующий элемент больше текущего, меняем их местами
-					}
-				}
+		
+		for (i=0; i<array_len; i++) {
+			
+			for (j=0; j<array_len-i-1; j++)	{  // Отнимаем i, чтобы не трогать отсортированные элементы
+				// j-й элемент - текущий
+				
+				k=j+1; // k-й элемент - следующий
+				if (ascending==1 && compare_function(_ITH(j), _ITH(k))==1)  // Сортируем по возрастанию
+					_swap_elems (_ITH(j), _ITH(k), elem_size); // Если текущий элемент больше следующего, меняем их местами
+				
+				else if (ascending==0 && compare_function(_ITH(j), _ITH(k))==0) // Сортируем по убыванию
+					_swap_elems (_ITH(j), _ITH(k), elem_size); // Если текущий элемент больше следующего, меняем их местами
 			}
 		}
 }
