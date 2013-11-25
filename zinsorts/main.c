@@ -36,8 +36,8 @@ int MAIN_TestMode(int argc, char** argv);
 
 // Чтобы переключить режим, надо закомметить два ненужных режима и раскомментить нужный
 //#define MAIN_MODE_TEST
-//#define MAIN_MODE_INTERACTIVE 
-#define MAIN_MODE_PROFILE
+#define MAIN_MODE_INTERACTIVE 
+//#define MAIN_MODE_PROFILE
 
 int main(int argc, char** argv) {
 	int rc;
@@ -83,6 +83,7 @@ int MAIN_InteractiveMode(int argc, char** argv) {
 			int_array_capacity = 25;
 			int_array_len = 0;
 			need_init = 0;
+			fflush(stdin);
 			printf("Input an array to sort: ");
 		}
 		// Читаем до следующего пробела
@@ -101,6 +102,7 @@ int MAIN_InteractiveMode(int argc, char** argv) {
 			free(int_array);
 			int_array_len = 0;
 			need_init = 1;
+			fflush(stdin);
 			printf("\n");
 			continue;
 		}
@@ -164,10 +166,12 @@ array_dimensions_min:
 		// Пробуем сделать число
 		n_minElems = (int) strtol(input_buf, &pEnd, 10);
 		if (pEnd == input_buf) {
+			fflush(stdin);
 			goto array_dimensions_min;
 		}
 
 		if (n_minElems < 1) {
+			fflush(stdin);
 			goto array_dimensions_min;
 		}
 array_dimensions_max:
@@ -176,10 +180,12 @@ array_dimensions_max:
 
 		n_maxElems = (int) strtol(input_buf, &pEnd, 10);
 		if (pEnd == input_buf) {
+			fflush(stdin);
 			goto array_dimensions_max;
 		}
 
 		if (n_maxElems <= n_minElems) {
+			fflush(stdin);
 			goto array_dimensions_max;
 		}
 
@@ -187,6 +193,7 @@ filename:
 		printf("gnuplot & PNG file name: ");
 		scanf(" %s", input_buf);
 		if (!strlen(input_buf)) {
+			fflush(stdin);
 			goto filename;
 		}
 		printf ("Profiling...");

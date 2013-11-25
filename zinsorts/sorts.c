@@ -16,48 +16,50 @@ __forceinline void* _ith_element(void* array, int i, int elem_size);
 // Копирование элементов обобщенного массива
 void _copy_elems(void* src, void* dst, int elem_size);
 // Обмен элементов обобщенного массива
-void _swap_elems(void* a, void* b, int elem_size);
+void _swap_elems(void* a, void* b, int elem_size, void* buffer);
 // Обращение обобщенного массива
-void _reverse(void* array, int array_len, int elem_size);
+void _reverse(void* array, int array_len, int elem_size, void* buffer);
 // Кучификация массива
-void _heap_heapify(void* array, int elem_size, int array_len, int (*compare_function)(void* pA, void* pB), int i);
+void _heap_heapify(void* array, int elem_size, int array_len, int (*compare_function)(void* pA, void* pB), int i, void* buffer);
+/* Все эти функции хотят выделенную память размером elem_size в указателе buffer */
+
 
 /* Сортировка кучей  */ 
 void SRT_sort_heap(void* array, int elem_size, int array_len, 
 	int (*compare_function)(void* pA, void* pB), int ascending) {
+	void* buffer = malloc(elem_size);
 
 	//_reverse(array, elem_size, array_len);
 	int i;
 
 	// Кучифицируем
 	for (i = array_len / 2 - 1; i >= 0; --i) {
-		_heap_heapify(array, elem_size, array_len, compare_function, i);
+		_heap_heapify(array, elem_size, array_len, compare_function, i, buffer);
 	}
 
 	// Сортируем
 	while (array_len > 1) {
 		--array_len;
-		_swap_elems(_ITH(0), _ITH(array_len), elem_size);
-		_heap_heapify(array, elem_size, array_len, compare_function, 0);
+		_swap_elems(_ITH(0), _ITH(array_len), elem_size, buffer);
+		_heap_heapify(array, elem_size, array_len, compare_function, 0, buffer);
 	}
 
-	if (!ascending) _reverse(array, elem_size, array_len);
-
+	if (!ascending) _reverse(array, elem_size, array_len, buffer);
+	free(buffer);
 }
 
-void _heap_heapify(void* array, int elem_size, int array_len, int (*compare_function)(void* pA, void* pB), int i) {
+void _heap_heapify(void* array, int elem_size, int array_len, int (*compare_function)(void* pA, void* pB), int i, void* buffer) {
 	int maxChild = i;
 	int childN;
-	void* value = malloc(elem_size);
 	
 	// Значение текущего элемента
-	_copy_elems(value, _ITH(i), elem_size);
+	_copy_elems(buffer, _ITH(i), elem_size);
 
 	while (1) {
 		childN = i * 2 + 1; // Левый потомок
 
 		// Левый потомок больше текущего?
-		if ((childN < array_len) && compare_function(_ITH(childN), value)) {
+		if ((childN < array_len) && compare_function(_ITH(childN), buffer)) {
 			maxChild = childN; // Тогда он максимальный
 		}
 
@@ -73,12 +75,11 @@ void _heap_heapify(void* array, int elem_size, int array_len, int (*compare_func
 
 		 //Меняем местами текущий с максимальным:
 		_copy_elems(_ITH(i), _ITH(maxChild), elem_size); // a[i] = a[maxChild]
-		_copy_elems(_ITH(maxChild), value, elem_size); // a[maxChild] = value
+		_copy_elems(_ITH(maxChild), buffer, elem_size); // a[maxChild] = buffer
 
 		i = maxChild; // Перешли к изменившемуся потомку
 
 	}
-	free(value);	
 }
 
 
@@ -87,19 +88,25 @@ void SRT_sort_bubble(void* array, int elem_size, int array_len,
 	int (*compare_function)(void* pA, void* pB), int ascending) 
 {
 	int i, j, k;
+	void* buffer;
+
 	k = 0;
+	buffer = malloc(elem_size);
 		
 	for (i = 0; i < array_len; i++) {	
 		for (j = 0; j < array_len - i - 1; j++)	{  // Отнимаем i, чтобы не трогать отсортированные элементы
 			// j-й элемент - текущий
 			k = j + 1; // k-й элемент - следующий
 			if (ascending == 1 && compare_function(_ITH(j), _ITH(k)) == 1)  // Сортируем по возрастанию
-				_swap_elems (_ITH(j), _ITH(k), elem_size); // Если текущий элемент больше следующего, меняем их местами
+				_swap_elems (_ITH(j), _ITH(k), elem_size, buffer); // Если текущий элемент больше следующего, меняем их местами
 
 			else if (ascending == 0 && compare_function(_ITH(j), _ITH(k)) == 0) // Сортируем по убыванию
-				_swap_elems (_ITH(j), _ITH(k), elem_size); // Если текущий элемент больше следующего, меняем их местами
+				_swap_elems (_ITH(j), _ITH(k), elem_size, buffer); // Если текущий элемент больше следующего, меняем их местами
 		}
 	}
+
+	free(buffer);
+
 }
 	/* Количество аргументов немного демотивирует. 
 	По идее, всё, что должны делать эти функции - обрабатывать возвращаемые значения и записывать отсортированный массив?*/
@@ -118,28 +125,20 @@ void SRT_sort_bubble(void* array, int elem_size, int array_len,
 */
 
 
-void _copy_elems(void* dst, void* src, int elem_size) {
-	if (elem_size > 0) {
-		memcpy(dst, src, elem_size);
-	}
+__forceinline void _copy_elems(void* dst, void* src, int elem_size) {
+	memcpy(dst, src, elem_size);
 }
 
-void _swap_elems(void* a, void* b, int elem_size) {
-	void* buf;
-	if (elem_size > 0) {
-		buf = malloc(elem_size);
-		if (!buf) return;
-		memcpy(buf, a, elem_size);	// buf = a
-		memcpy(a, b, elem_size);	// a = b
-		memcpy(b, buf, elem_size);	// b = buf
-		free(buf);
-	}
+void _swap_elems(void* a, void* b, int elem_size, void* buffer) {
+	memcpy(buffer, a, elem_size);	// buf = a
+	memcpy(a, b, elem_size);	// a = b
+	memcpy(b, buffer, elem_size);	// b = buf
 }
 
-void _reverse(void* array, int elem_size, int array_len) {
+void _reverse(void* array, int elem_size, int array_len, void* buffer) {
 	int i;
 	for (i = 0; i < array_len / 2; ++i) {
-		_swap_elems(_ITH(i), _ITH(array_len - 1 - i), elem_size);
+		_swap_elems(_ITH(i), _ITH(array_len - 1 - i), elem_size, buffer);
 	}
 }
 
