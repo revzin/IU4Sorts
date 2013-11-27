@@ -223,11 +223,38 @@ filename:
 int MAIN_TestMode(int argc, char** argv){
 	// ПАВЕЛ: здесь реализация режима тестирования
 	// Руководящее указание: используй TST_TestSort(..), которую ты реализовал в test.c
-	int num;
-	num = TST_TestSort(SRT_sort_bubble);
-	if (num != 0) printf("Incorrect sorting\n");
-	else printf("Correct sorting\n");
-
-	system("Pause");
-	return 0;
+ int num;
+ char ch[MAX_STRING_LEN];
+ for(;;) {
+	   printf("Which sort function do you want to check:\n");
+	   printf("1: Heap sorting;\n");
+	   printf("2: Bubble sorting;\n");
+       printf("3: Incorrect sorting function(identity function);\n");
+       printf("0: Exit.\n");
+	   printf("Press cirtain number: ");
+	   scanf(" %s", ch);
+	   printf("\n");
+	   if (!strncmp("1", ch, MAX_STRING_LEN))  {
+         num = TST_TestSort(SRT_sort_heap);
+	     if (num == 0) printf("Heap sorting is correct!\n");
+	     else printf("Heap sorting is incorrect!\n");
+         printf("Number of failed tests: %d %s", num,"\n");
+	   } else if (!strncmp("2", ch, MAX_STRING_LEN)) {
+		 num = TST_TestSort(SRT_sort_bubble);
+	     if (num == 0) printf("Bubble sorting is correct!\n");
+	     else printf("Bubble sorting is correct!\n");
+		 printf("Number of failed tests: %d %s", num,"\n");
+	   } else if (!strncmp("3", ch, MAX_STRING_LEN)) {
+		 num = TST_TestSort(SRT_inc_sort);
+	     if (num == 0) printf("Incorect sorting is correct! Damn that world\n");
+	     else printf("Incorrect sorting is incorrect! Very strange!\n");
+		 printf("Number of failed tests: %d %s", num,"\n");
+	   } else if (!strncmp("0", ch, MAX_STRING_LEN)) {
+		 break;
+	   } else { printf("Wrong input! Repeat, please.\n\n"); continue;}
+     
+	   printf("\n");
+ }
+	
+ return 0;
 }

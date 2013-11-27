@@ -28,8 +28,8 @@ const TST_referenceSortRun g_GeneralCase = {
 };
  
 int TST_TestSort(void (*sort_function)(void* array, int elem_size, int array_len,
-                                                                                        int (*compare_function)(void* pA, void* pB),
-                                                                                        int ascending))
+                                                  int (*compare_function)(void* pA, void* pB),
+                             int ascending))
 {
 	// ПАВЕЛ: реализация...
 	// Напоминаю, функция TST_TestSort должна прогнать *sort_function по всем трём эталонным сортировкам
@@ -82,3 +82,6 @@ int TST_TestSort(void (*sort_function)(void* array, int elem_size, int array_len
 
 	return num;
 }
+
+void SRT_inc_sort(void* array, int elem_size, int array_len, 
+	int (*compare_function)(void* pA, void* pB), int ascending){}

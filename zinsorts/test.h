@@ -29,5 +29,9 @@ int TST_TestSort(void (*sort_function)(void* array, int elem_size, int array_len
 // всё это - всего лишь указатель на функцию, подобную той, что можно найти в sort.h
 // TST_TestSort возвращает число проваленных проверок!
 
+void SRT_inc_sort(void* array, int elem_size, int array_len, 
+	int (*compare_function)(void* pA, void* pB), int ascending);
+// функция неправильной сортировки
+
 
 
