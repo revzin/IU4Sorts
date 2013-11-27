@@ -35,8 +35,8 @@ int MAIN_TestMode(int argc, char** argv);
 // не прошло
 
 // Чтобы переключить режим, надо закомметить два ненужных режима и раскомментить нужный
-//#define MAIN_MODE_TEST
-#define MAIN_MODE_INTERACTIVE 
+#define MAIN_MODE_TEST
+//#define MAIN_MODE_INTERACTIVE 
 //#define MAIN_MODE_PROFILE
 
 int main(int argc, char** argv) {
@@ -223,5 +223,11 @@ filename:
 int MAIN_TestMode(int argc, char** argv){
 	// ПАВЕЛ: здесь реализация режима тестирования
 	// Руководящее указание: используй TST_TestSort(..), которую ты реализовал в test.c
+	int num;
+	num = TST_TestSort(SRT_sort_bubble);
+	if (num != 0) printf("Incorrect sorting\n");
+	else printf("Correct sorting\n");
+
+	system("Pause");
 	return 0;
 }
