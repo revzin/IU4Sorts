@@ -26,7 +26,8 @@ void _heap_heapify(void* array, int elem_size, int array_len, int (*compare_func
 
 /* Сортировка кучей  */ 
 void SRT_sort_heap(void* array, int elem_size, int array_len, 
-	int (*compare_function)(void* pA, void* pB), int ascending) {
+	int (*compare_function)(void* pA, void* pB), int ascending) 
+{
 	void* buffer = malloc(elem_size);
 
 	//_reverse(array, elem_size, array_len);
@@ -48,7 +49,8 @@ void SRT_sort_heap(void* array, int elem_size, int array_len,
 	free(buffer);
 }
 
-void _heap_heapify(void* array, int elem_size, int array_len, int (*compare_function)(void* pA, void* pB), int i, void* buffer) {
+void _heap_heapify(void* array, int elem_size, int array_len, int (*compare_function)(void* pA, void* pB), int i, void* buffer) 
+{
 	int maxChild = i;
 	int childN;
 	
