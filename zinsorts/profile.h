@@ -16,9 +16,11 @@ double	PROF_StopProfile();
 
 double	PROF_ProfileSort(int nElems,
 	void (*sort_function)(void* array, int elem_size, int array_len, 
-			int (*compare_function)(void* pA, void* pB), int ascending)
+			int (*compare_function)(void* pA, void* pB), int ascending),
+			int* arrayBuffer
 	);
 // Замер времени, требуемого на сортировку nElems элементов функцией сортировки, заданной указателем *sort_function
+// В arrayBuffer требуется передать место под размещение array_len int-ов
 
 int	PROF_PlotEfficiency(char* pszFileName,
 	void (*sort_function)(void* array, int elem_size, int array_len, 

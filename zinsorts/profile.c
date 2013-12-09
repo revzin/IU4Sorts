@@ -5,6 +5,7 @@
 #include <malloc.h>
 #include <time.h>
 #include <stdio.h>
+#include <float.h> // DBL_MAX
 
 
 // Винда
@@ -21,7 +22,7 @@
 /* Вспомогательная функция, выделяет память и создаёт size рандомных интов */
 int* AllocRandIntArray(int size); 
 
-
+#define RUNS_PER_VALUE 10
 
 // Здесь всё в микросекундах!
 __int64 g_StartTime = -1;			// Тиков процессора в момента запуска PROF_StartProfile
@@ -87,32 +88,34 @@ double	PROF_StopProfile() {
 
 double	PROF_ProfileSort(int nElems,
 	void (*sort_function)(void* array, int elem_size, int array_len, 
-			int (*compare_function)(void* pA, void* pB), int ascending)
+			int (*compare_function)(void* pA, void* pB), int ascending), 
+			int* arrayBuffer
 	) 
 {
-	int* randomIntArray;
-	double timeElapsed; 
+	int i;
+	double timeElapsed, locTimeElapsed;
 
 	if (nElems < 0 || !sort_function) return -1.0f;
 
-	/* Выделяем место под массив интов под сортировку */
-	randomIntArray = AllocRandIntArray(nElems);
-	if (!randomIntArray) return -1.0f;
+	for (i = 0; i < nElems; ++i)
+		arrayBuffer[i] = rand();
+	// Расписываем случайными интами память под массив для сортировки
 
-	/* Профилируем сортировку */
-	PROF_StartProfile(); 
-	sort_function((void*) randomIntArray, sizeof(int), nElems, CMP_CompareInts, 0);
-	timeElapsed = PROF_GetTimeElapsedMSec();
-	PROF_StopProfile();
+	timeElapsed = DBL_MAX;
+	/* Профилируем сортировку - лучший из N результатов */
+	for (i = 0; i < RUNS_PER_VALUE; ++i) {
+		PROF_StartProfile(); 
+		sort_function((void*) arrayBuffer, sizeof(int), nElems, CMP_CompareInts, 0);
+		locTimeElapsed = PROF_GetTimeElapsedMSec();
+		PROF_StopProfile();
+		if (locTimeElapsed < timeElapsed) timeElapsed = locTimeElapsed;
+	}
 	/* Допрофилировались */
-
-	free(randomIntArray);	
-	/* Освобождаем ресурсы */
-	
 	if (timeElapsed <= 0.0) return -1.0f;
 	return timeElapsed;
 }
 
+/* Строчки для общения с gnuplot */
 const char GNUPLOT_CmdSetTitle[] = "set title \"Complexity\"\n";
 const char GNUPLOT_CmdSetXLabel[] = "set xlabel \"Number of elements in array\"\n";
 const char GNUPLOT_CmdSetYLabel[] = "set ylabel \"Time (abstract units)\"\n";
@@ -133,25 +136,26 @@ int	PROF_PlotEfficiency(char* pszFileName,
 	FILE* data_out, *gnuplot_out;
 	int i;
 	double locValue;
-	const int sleep_offload = 10;
+	int* arrayBuffer;
 
 	char stringbuf[255];
 
 	if (!pszFileName || !sort_function || 
 			n_minElems <= 0 || n_maxElems <= 0 || n_minElems >= n_maxElems) return 2;
 
+	arrayBuffer = malloc(sizeof(int) * n_maxElems);
+
+	if (!arrayBuffer) return 3;
+
 	// Профилировка и запись файла с данными
 	if (fopen_s(&data_out, GNUPLOT_DefaultDatafileName, "w+")) return 1; 
 	fprintf_s(data_out, GNUPLOT_FileTitle);
 
 	for (i = n_minElems; i < n_maxElems + 1; ++i) {
-		Sleep(sleep_offload);	// Спим некоторое время. Это делает эффекты, вносимые
-								// переключением контекстов и прочей гадостью, менее значительными
-								// Графики получаются куда более гладкими
-		locValue = PROF_ProfileSort(i, sort_function);
-		Sleep(sleep_offload);
+		locValue = PROF_ProfileSort(i, sort_function, arrayBuffer);
 		fprintf_s(data_out, GNUPLOT_DataFormat, i, locValue);
 	}
+
 	fclose(data_out);
 
 	strncpy(stringbuf, pszFileName, 255);
@@ -171,6 +175,8 @@ int	PROF_PlotEfficiency(char* pszFileName,
 	fprintf_s(gnuplot_out,  GNUPLOT_CmdDoPlot, GNUPLOT_DefaultDatafileName);
 	fprintf_s(gnuplot_out,  GNUPLOT_CmdExit);
 	fclose(gnuplot_out);
+
+	free(arrayBuffer);
 
 	return 0;
 }

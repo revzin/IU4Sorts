@@ -17,6 +17,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+
+#include <Windows.h>
  
 // Сюда - местные инклюды
 #include "profile.h"
@@ -36,14 +38,18 @@ int MAIN_TestMode(int argc, char** argv);
  
 // Чтобы переключить режим, надо закомметить два ненужных режима и раскомментить нужный
 //#define MAIN_MODE_TEST
-#define MAIN_MODE_INTERACTIVE
-//#define MAIN_MODE_PROFILE
+//#define MAIN_MODE_INTERACTIVE
+#define MAIN_MODE_PROFILE
+
+
+void CtrlBreakHandler(int code);
  
 int main(int argc, char** argv) {
         int rc;
  
         printf("Sorting Algorithms Team Assigment --- \n \t by G. Revzin, D. Feoktistov, P. Denisik & P. Monchakovskaya (IU4-32).\n");
- 
+		SetConsoleCtrlHandler((PHANDLER_ROUTINE) CtrlBreakHandler, TRUE);
+
         // Запуск активного режима работы
 #ifdef MAIN_MODE_INTERACTIVE
         rc = MAIN_InteractiveMode(argc, argv);
@@ -59,7 +65,8 @@ int main(int argc, char** argv) {
  
 #define MAX_STRING_LEN ((int) 255)
  
- 
+
+
 int MAIN_InteractiveMode(int argc, char** argv) {
         int* int_array;
         int int_array_len, int_array_capacity;
@@ -71,15 +78,15 @@ int MAIN_InteractiveMode(int argc, char** argv) {
  
         int need_init = 1;
  
-        const SELSORT_BUBBLE = 0;
-        const SELSORT_HEAP = 1;
+        const int SELSORT_BUBBLE = 0;
+        const int SELSORT_HEAP = 1;
  
         int selected_sort = SELSORT_HEAP;
         /*
                 Вводится строка чисел. Если получено \n, числа сортируется и выводится сортированный массив.
                 Если какое-то из чисел не получилось превратить в число, сбрасываем.
         */
- 
+
         printf("\n \t Interactive sorting mode\n\n");
         printf("Type 'bubble' to use bubble sort, 'heap' - to use heapsort. Heapsort is used by default.\n");
         for (;;) {
@@ -153,6 +160,7 @@ int MAIN_InteractiveMode(int argc, char** argv) {
 int MAIN_ProfileMode(int argc, char** argv) {
         char input_buf[MAX_STRING_LEN], filename[MAX_STRING_LEN];
         int n_maxElems, n_minElems;
+		int prc;
  
         char* pEnd;
         const int SELSORT_BUBBLE = 0;
@@ -216,11 +224,18 @@ filename:
                 printf ("Profiling...");
  
                 if (selected_sort == SELSORT_BUBBLE) {
-                        PROF_PlotEfficiency(input_buf, SRT_sort_bubble, n_minElems, n_maxElems);
+                       prc = PROF_PlotEfficiency(input_buf, SRT_sort_bubble, n_minElems, n_maxElems);
                 } else {
-                        PROF_PlotEfficiency(input_buf, SRT_sort_heap, n_minElems, n_maxElems);
+                       prc = PROF_PlotEfficiency(input_buf, SRT_sort_heap, n_minElems, n_maxElems);
                 }
-                printf("Running gnuplot...");
+
+				if (prc) {
+					printf("PROF_PlotEfficiency FAILED with rc %d!! Aborting.\n", prc);
+					system("pause");
+					exit(1);
+				}
+
+                printf("Running gnuplot... ");
                 strcpy(filename, input_buf);
                 memset(input_buf, 0, MAX_STRING_LEN);
                 strcpy(input_buf, "gnuplot ");
@@ -228,7 +243,7 @@ filename:
                 strcat(input_buf, ".plt");
                 system(input_buf); // Пуск gnuplot
                 memset(input_buf, 0, MAX_STRING_LEN);
-                strcpy(input_buf, "call ");
+                //strcpy(input_buf, "call ");
                 strcat(input_buf, filename);
                 strcat(input_buf, ".png");
                 system(input_buf); // Открываем картиночку
@@ -275,3 +290,13 @@ int MAIN_TestMode(int argc, char** argv){
        
  return 0;
 }
+
+
+void CtrlBreakHandler(int code) {
+	if (code == CTRL_C_EVENT || code == CTRL_BREAK_EVENT) {
+		printf("\nCtrl-Break! Aborting...\n");
+		system("pause");
+		exit(-1);
+	}
+}
+
