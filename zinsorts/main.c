@@ -38,8 +38,8 @@ int MAIN_TestMode(int argc, char** argv);
  
 // Чтобы переключить режим, надо закомметить два ненужных режима и раскомментить нужный
 //#define MAIN_MODE_TEST
-//#define MAIN_MODE_INTERACTIVE
-#define MAIN_MODE_PROFILE
+#define MAIN_MODE_INTERACTIVE
+//#define MAIN_MODE_PROFILE
 
 
 void CtrlBreakHandler(int code);
@@ -88,7 +88,7 @@ int MAIN_InteractiveMode(int argc, char** argv) {
         */
 
         printf("\n \t Interactive sorting mode\n\n");
-        printf("Type 'bubble' to use bubble sort, 'heap' - to use heapsort. Heapsort is used by default.\n");
+        printf("Type 'bubble' to use bubble sort, 'heap' - to use heapsort, 'exit' - to exit programm. Heapsort is used by default.\n");
         for (;;) {
                 if (need_init) {
                         int_array = malloc(sizeof(int) * 25);
