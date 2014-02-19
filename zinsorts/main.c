@@ -163,7 +163,7 @@ int MAIN_ProfileMode(int argc, char** argv) {
 		int prc;
  
         char* pEnd;
-        const int SELSORT_BUBBLE = 0;
+        const int SELSORT_BUBBLE = 0;	
         const int SELSORT_HEAP = 1;
  
         int selected_sort = -1;
@@ -296,7 +296,7 @@ void CtrlBreakHandler(int code) {
 	if (code == CTRL_C_EVENT || code == CTRL_BREAK_EVENT) {
 		printf("\nCtrl-Break! Aborting...\n");
 		system("pause");
-		exit(-1);
+		abort();
 	}
 }
 

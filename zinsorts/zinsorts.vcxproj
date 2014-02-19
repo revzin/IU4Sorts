@@ -74,6 +74,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="common_typedef.h" />
     <ClInclude Include="comp.h" />
     <ClInclude Include="profile.h" />
     <ClInclude Include="sorts.h" />

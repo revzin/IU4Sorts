@@ -86,16 +86,12 @@ double	PROF_StopProfile() {
 	return PROF_GetTimeElapsedMSec();
 }
 
-double	PROF_ProfileSort(int nElems,
-	void (*sort_function)(void* array, int elem_size, int array_len, 
-			int (*compare_function)(void* pA, void* pB), int ascending), 
-			int* arrayBuffer
-	) 
+double	PROF_ProfileSort(int nElems, sort_function sf, int* arrayBuffer) 
 {
 	int i;
 	double timeElapsed, locTimeElapsed;
 
-	if (nElems < 0 || !sort_function) return -1.0f;
+	if (nElems < 0 || !sf) return -1.0f;
 
 	for (i = 0; i < nElems; ++i)
 		arrayBuffer[i] = rand();
@@ -105,7 +101,7 @@ double	PROF_ProfileSort(int nElems,
 	/* Профилируем сортировку - лучший из N результатов */
 	for (i = 0; i < RUNS_PER_VALUE; ++i) {
 		PROF_StartProfile(); 
-		sort_function((void*) arrayBuffer, sizeof(int), nElems, CMP_CompareInts, 0);
+		sf((void*) arrayBuffer, sizeof(int), nElems, CMP_CompareInts, 0);
 		locTimeElapsed = PROF_GetTimeElapsedMSec();
 		PROF_StopProfile();
 		if (locTimeElapsed < timeElapsed) timeElapsed = locTimeElapsed;
@@ -128,10 +124,7 @@ const char GNUPLOT_FileTitle[] = "#elements \t time\n";
 const char GNUPLOT_DataFormat[] = "%d \t %f\n";
 const char GNUPLOT_DefaultDatafileName[] = "algo_complex.data";
 
-int	PROF_PlotEfficiency(char* pszFileName,
-	void (*sort_function)(void* array, int elem_size, int array_len, 
-			/* Это всё один аргумент - указатель на ф-цию сортировки */	int (*compare_function)(void* pA, void* pB), int ascending),
-			/* А эти два - третий и чётвертый */ int n_minElems, int n_maxElems) 
+int	PROF_PlotEfficiency(char* pszFileName, sort_function sf, int n_minElems, int n_maxElems) 
 {
 	FILE* data_out, *gnuplot_out;
 	int i;
@@ -140,7 +133,7 @@ int	PROF_PlotEfficiency(char* pszFileName,
 
 	char stringbuf[255];
 
-	if (!pszFileName || !sort_function || 
+	if (!pszFileName || !sf || 
 			n_minElems <= 0 || n_maxElems <= 0 || n_minElems >= n_maxElems) return 2;
 
 	arrayBuffer = malloc(sizeof(int) * n_maxElems);
@@ -152,7 +145,7 @@ int	PROF_PlotEfficiency(char* pszFileName,
 	fprintf_s(data_out, GNUPLOT_FileTitle);
 
 	for (i = n_minElems; i < n_maxElems + 1; ++i) {
-		locValue = PROF_ProfileSort(i, sort_function, arrayBuffer);
+		locValue = PROF_ProfileSort(i, sf, arrayBuffer);
 		fprintf_s(data_out, GNUPLOT_DataFormat, i, locValue);
 	}
 
@@ -165,7 +158,6 @@ int	PROF_PlotEfficiency(char* pszFileName,
 	if (fopen_s(&gnuplot_out, stringbuf, "w+")) return 1; 
 	fprintf_s(gnuplot_out,	GNUPLOT_CmdSetTitle);
 	fprintf_s(gnuplot_out,  GNUPLOT_CmdSetXLabel);
-	fprintf_s(gnuplot_out,  GNUPLOT_CmdSetYLabel);
 	fprintf_s(gnuplot_out,  GNUPLOT_CmdSetYLabel);
 	fprintf_s(gnuplot_out,  GNUPLOT_CmdSetGrid);
 

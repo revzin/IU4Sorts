@@ -10,10 +10,10 @@
 
 // Местные инклюды
 #include "comp.h"
-
+#include "common_typedef.h"
 
 void SRT_sort_heap(void* array, int elem_size, int array_len, 
-	int (*compare_function)(void* pA, void* pB), int ascending);
+	compare_function, int ascending);
 /*	Пирамидальная сортировка произвольного типа данных
 	array		-	указатель на массив под сортировку
 	elem_size	-	размер одного элемента в байтах (напр. sizeof(int))
@@ -28,7 +28,7 @@ void SRT_sort_heap(void* array, int elem_size, int array_len,
 */
 
 void SRT_sort_bubble(void* array, int elem_size, int array_len, 
-	int (*compare_function)(void* pA, void* pB), int ascending);
+	compare_function, int ascending);
 /*	Пузырьковая сортировка произвольного типа данных
 	array		-	указатель на массив под сортировку
 	elem_size	-	размер одного элемента в байтах (напр. sizeof(int))

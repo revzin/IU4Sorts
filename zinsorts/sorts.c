@@ -20,13 +20,13 @@ void _swap_elems(void* a, void* b, int elem_size, void* buffer);
 // Обращение обобщенного массива
 void _reverse(void* array, int array_len, int elem_size, void* buffer);
 // Кучификация массива
-void _heap_heapify(void* array, int elem_size, int array_len, int (*compare_function)(void* pA, void* pB), int i, void* buffer);
+void _heap_heapify(void* array, int elem_size, int array_len, compare_function cf, int i, void* buffer);
 /* Все эти функции хотят выделенную память размером elem_size в указателе buffer */
 
 
 /* Сортировка кучей  */ 
 void SRT_sort_heap(void* array, int elem_size, int array_len, 
-	int (*compare_function)(void* pA, void* pB), int ascending) 
+	compare_function cf, int ascending) 
 {
 	void* buffer = malloc(elem_size);
 
@@ -35,21 +35,24 @@ void SRT_sort_heap(void* array, int elem_size, int array_len,
 
 	// Кучифицируем
 	for (i = array_len / 2 - 1; i >= 0; --i) {
-		_heap_heapify(array, elem_size, array_len, compare_function, i, buffer);
+		_heap_heapify(array, elem_size, array_len, cf, i, buffer);
 	}
+
+	// Сохраним длинну массива в не нужной более i
+	i = array_len;
 
 	// Сортируем
 	while (array_len > 1) {
 		--array_len;
 		_swap_elems(_ITH(0), _ITH(array_len), elem_size, buffer);
-		_heap_heapify(array, elem_size, array_len, compare_function, 0, buffer);
+		_heap_heapify(array, elem_size, array_len, cf, 0, buffer);
 	}
 
-	if (!ascending) _reverse(array, elem_size, array_len, buffer);
+	if (!ascending) _reverse(array, elem_size, i, buffer);
 	free(buffer);
 }
 
-void _heap_heapify(void* array, int elem_size, int array_len, int (*compare_function)(void* pA, void* pB), int i, void* buffer) 
+void _heap_heapify(void* array, int elem_size, int array_len, compare_function cf, int i, void* buffer) 
 {
 	int maxChild = i;
 	int childN;
@@ -61,14 +64,14 @@ void _heap_heapify(void* array, int elem_size, int array_len, int (*compare_func
 		childN = i * 2 + 1; // Левый потомок
 
 		// Левый потомок больше текущего?
-		if ((childN < array_len) && compare_function(_ITH(childN), buffer)) {
+		if ((childN < array_len) && cf(_ITH(childN), buffer)) {
 			maxChild = childN; // Тогда он максимальный
 		}
 
 		++childN; // Перешли к правому
 
 		// Правый потомок больше текущего?
-		if ((childN < array_len) && compare_function(_ITH(childN), _ITH(maxChild)) ) {
+		if ((childN < array_len) && cf(_ITH(childN), _ITH(maxChild)) ) {
 			maxChild = childN; // Тогда он максимальный
 		}
 
@@ -87,29 +90,26 @@ void _heap_heapify(void* array, int elem_size, int array_len, int (*compare_func
 
 /* Сортировка пузырём */
 void SRT_sort_bubble(void* array, int elem_size, int array_len, 
-	int (*compare_function)(void* pA, void* pB), int ascending) 
+	compare_function cf, int ascending) 
 {
 	int i, j, k;
 	void* buffer;
-
 	k = 0;
 	buffer = malloc(elem_size);
-		
 	for (i = 0; i < array_len; i++) {	
 		for (j = 0; j < array_len - i - 1; j++)	{  // Отнимаем i, чтобы не трогать отсортированные элементы
 			// j-й элемент - текущий
 			k = j + 1; // k-й элемент - следующий
-			if (ascending == 1 && compare_function(_ITH(j), _ITH(k)) == 1)  // Сортируем по возрастанию
+			if (ascending == 1 && cf(_ITH(j), _ITH(k)) == 1)  // Сортируем по возрастанию
 				_swap_elems (_ITH(j), _ITH(k), elem_size, buffer); // Если текущий элемент больше следующего, меняем их местами
 
-			else if (ascending == 0 && compare_function(_ITH(j), _ITH(k)) == 0) // Сортируем по убыванию
+			else if (ascending == 0 && cf(_ITH(j), _ITH(k)) == 0) // Сортируем по убыванию
 				_swap_elems (_ITH(j), _ITH(k), elem_size, buffer); // Если текущий элемент больше следующего, меняем их местами
 		}
 	}
-
 	free(buffer);
-
 }
+
 	/* Количество аргументов немного демотивирует. 
 	По идее, всё, что должны делать эти функции - обрабатывать возвращаемые значения и записывать отсортированный массив?*/
 
